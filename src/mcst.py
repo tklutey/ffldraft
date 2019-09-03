@@ -56,7 +56,7 @@ def GetMoves(self):
 
 DraftState.GetMoves = GetMoves
 
-def DoMove(self, move):
+def DoMove(self, move, is_test=False):
     """ Update a state by carrying out the given move.
         Must update playerJustMoved.
     """
@@ -65,6 +65,10 @@ def DoMove(self, move):
     rosterId = self.turns.pop(0)
     self.rosters[rosterId].append(player)
     self.playerJustMoved = rosterId
+    if is_test:
+        return player
+    else:
+        return None
 
 
 DraftState.DoMove = DoMove
@@ -88,6 +92,8 @@ def UCT(rootstate, itermax, verbose=False):
     rootnode = Node(state=rootstate)
 
     for i in range(itermax):
+        if i % 250 is 0:
+            print(str(i/10) + "%")
         node = rootnode
         state = rootstate.Clone()
 
