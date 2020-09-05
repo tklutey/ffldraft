@@ -6,5 +6,4 @@ class NflPlayer:
         self.points = points
 
     def __repr__(self):
-        # return "|".join([self.name, str(self.team), self.position, str(self.points)])
         return "|".join([self.position, self.name])

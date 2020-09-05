@@ -32,7 +32,7 @@ def get_state():
 
     freeagents = [NflPlayer(*p) for p in nfl_players.itertuples(index=True, name=None)]
 
-    state = pd.read_csv(configurations.ROOT_DIR + '/data/draft.csv', index_col=0)
+    state = pd.read_csv(configurations.ROOT_DIR + '/data/draft.csv', index_col=0, header=None)
 
     num_competitors = 8
 
