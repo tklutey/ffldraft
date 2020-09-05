@@ -84,7 +84,7 @@ def Clone(self):
 DraftState.Clone = Clone
 
 
-def UCT(rootstate, itermax, verbose=False):
+def UCT(rootstate, itermax, verbose=False, isNpc=False, rounds_remaining=0):
     """ Conduct a UCT search for itermax iterations starting from rootstate.
         Return the best move from the rootstate.
     """
@@ -118,4 +118,14 @@ def UCT(rootstate, itermax, verbose=False):
                 node.playerJustMoved))  # state is terminal. Update node with result from POV of node.playerJustMoved
             node = node.parentNode
 
+    if isNpc:
+        return DoNpcMove(rootnode, rounds_remaining)
     return sorted(rootnode.childNodes, key=lambda c: c.visits)[-1].move  # return the move that was most visited
+
+def DoNpcMove(rootnode, rounds_remaining):
+    i = -1
+    move = sorted(rootnode.childNodes, key=lambda c: c.visits)[i].move
+    while rounds_remaining > 2 and (move == 'K' or move == 'D'):
+        move = sorted(rootnode.childNodes, key=lambda c: c.visits)[i].move
+        i -= 1
+    return move

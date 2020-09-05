@@ -1,3 +1,4 @@
+import csv
 import pandas as pd
 
 import configurations
@@ -5,20 +6,37 @@ from src.DraftState import DraftState
 from src.NflPlayer import NflPlayer
 from src.mcst import UCT
 
-def main():
+MY_TURN = 6
 
+def main():
     state = get_state()
     log_round(state.rosters)
+    round_number = get_round(state.rosters)
     iterations = 1000
     while state.GetMoves() != []:
-        move = UCT(state, iterations)
+        current_turn = state.turns[0]
+        move = UCT(state, iterations, rounds_remaining=16 - round_number, isNpc=current_turn != MY_TURN)
         print(move, end=".")
         player = state.DoMove(move, is_test=True)
         log_pick(player)
         log_round(state.rosters)
 
+    with open(configurations.ROOT_DIR + '/data/rosters.csv', 'w') as writeFile:
+        writer = csv.writer(writeFile)
+        team = 1
+        for roster in state.rosters:
+            roster.insert(0, team)
+            writer.writerow(roster)
+            team += 1
+
+
 def log_round(rosters):
-    print ("Round: " + str(max(len(i) for i in rosters)))
+    print("Round: " + str(get_round(rosters)))
+
+
+def get_round(rosters):
+    return max(len(i) for i in rosters)
+
 
 def log_pick(player):
     print("==========")
@@ -63,6 +81,7 @@ def get_state():
     print(rosters)
     state = DraftState(rosters, turns, freeagents)
     return state
+
 
 if __name__ == '__main__':
     main()
